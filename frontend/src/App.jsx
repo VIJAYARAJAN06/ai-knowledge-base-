@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from './store/useAuthStore';
+import PageTransition from './components/PageTransition';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Auth from './pages/Auth';
@@ -19,7 +20,7 @@ const Navbar = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 30);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
@@ -27,45 +28,58 @@ const Navbar = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav
-      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 w-[calc(100%-3rem)] max-w-5xl"
-    >
-      <div
-        className="flex items-center justify-between px-6 h-14 rounded-2xl transition-all duration-500"
-        style={{
-          background: scrolled ? 'rgba(2, 6, 23, 0.85)' : 'rgba(15, 23, 42, 0.5)',
-          border: scrolled ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(255,255,255,0.06)',
-          backdropFilter: 'blur(24px)',
-          boxShadow: scrolled ? '0 20px 40px rgba(0,0,0,0.4)' : 'none',
-        }}
-      >
+    <nav style={{
+      position: 'fixed', top: '14px', left: '50%', transform: 'translateX(-50%)',
+      zIndex: 9999, width: 'calc(100% - 3rem)', maxWidth: '1000px',
+      transition: 'all 0.4s cubic-bezier(0.16,1,0.3,1)',
+    }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 1.5rem', height: '56px', borderRadius: '1.25rem',
+        background: scrolled ? 'rgba(2, 6, 23, 0.92)' : 'rgba(15, 23, 42, 0.45)',
+        border: scrolled ? '1px solid rgba(255,255,255,0.13)' : '1px solid rgba(255,255,255,0.06)',
+        backdropFilter: 'blur(28px)',
+        boxShadow: scrolled ? '0 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06)' : 'none',
+        transition: 'all 0.4s ease',
+      }}>
+
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-emerald-500 flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform">
-            <Cpu size={16} className="text-white" />
+        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{
+            width: '32px', height: '32px', borderRadius: '10px',
+            background: 'linear-gradient(135deg, #3b82f6, #10b981)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 4px 15px rgba(59,130,246,0.4)',
+            transition: 'transform 0.3s ease',
+          }}
+          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.15) rotate(5deg)'}
+          onMouseLeave={e => e.currentTarget.style.transform = ''}
+          >
+            <Cpu size={16} color="white" />
           </div>
-          <span className="text-lg font-black tracking-tight text-white">
-            Agentic<span className="text-blue-400">AI</span>
+          <span style={{ fontWeight: 900, fontSize: '1.1rem', letterSpacing: '-0.02em' }}>
+            <span style={{ color: '#fff' }}>Agentic</span>
+            <span style={{ color: '#60a5fa' }}>AI</span>
           </span>
         </Link>
 
         {/* Nav Items */}
-        <div className="hidden md:flex items-center gap-1">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           {[
-            { path: '/knowledge', label: 'Library', icon: <BookOpen size={15} /> },
-            ...(user ? [{ path: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={15} /> }] : []),
+            { path: '/knowledge', label: 'Library', icon: <BookOpen size={14} /> },
+            ...(user ? [{ path: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={14} /> }] : []),
           ].map(({ path, label, icon }) => (
-            <Link
-              key={path}
-              to={path}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200"
-              style={{
-                background: isActive(path) ? 'rgba(59,130,246,0.15)' : 'transparent',
-                color: isActive(path) ? '#60a5fa' : '#94a3b8',
-                border: isActive(path) ? '1px solid rgba(59,130,246,0.3)' : '1px solid transparent',
-              }}
-              onMouseEnter={e => { if (!isActive(path)) e.currentTarget.style.color = '#e2e8f0'; }}
-              onMouseLeave={e => { if (!isActive(path)) e.currentTarget.style.color = '#94a3b8'; }}
+            <Link key={path} to={path} style={{
+              display: 'flex', alignItems: 'center', gap: '6px',
+              padding: '6px 14px', borderRadius: '10px',
+              textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600,
+              background: isActive(path) ? 'rgba(59,130,246,0.15)' : 'transparent',
+              color: isActive(path) ? '#93c5fd' : '#94a3b8',
+              border: isActive(path) ? '1px solid rgba(59,130,246,0.3)' : '1px solid transparent',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={e => { if (!isActive(path)) { e.currentTarget.style.color = '#e2e8f0'; e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}}
+            onMouseLeave={e => { if (!isActive(path)) { e.currentTarget.style.color = '#94a3b8'; e.currentTarget.style.background = 'transparent'; }}}
             >
               {icon} {label}
             </Link>
@@ -73,29 +87,39 @@ const Navbar = () => {
         </div>
 
         {/* Auth */}
-        <div className="flex items-center gap-3">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           {user ? (
             <>
-              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm"
-                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-xs font-bold text-white">
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: '8px',
+                padding: '5px 12px', borderRadius: '10px',
+                background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)',
+              }}>
+                <div style={{
+                  width: '26px', height: '26px', borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #3b82f6, #a855f7)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '11px', fontWeight: 800, color: '#fff',
+                }}>
                   {user.name?.[0]?.toUpperCase() || 'U'}
                 </div>
-                <span className="text-slate-300 font-medium">{user.name}</span>
+                <span style={{ fontSize: '0.83rem', color: '#cbd5e1', fontWeight: 600 }}>{user.name}</span>
               </div>
-              <button
-                onClick={logout}
-                className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-red-400 transition-all hover:bg-red-500/10 hover:text-red-300"
-                title="Sign Out"
+              <button onClick={logout} style={{
+                display: 'flex', alignItems: 'center', gap: '5px',
+                padding: '7px 10px', borderRadius: '8px', border: 'none',
+                background: 'rgba(239,68,68,0.08)', color: '#f87171',
+                cursor: 'pointer', fontSize: '0.82rem', fontWeight: 600,
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.18)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.08)'; }}
               >
-                <LogOut size={16} />
+                <LogOut size={15} /> Logout
               </button>
             </>
           ) : (
-            <Link
-              to="/auth"
-              className="premium-btn px-5 py-2 rounded-xl text-sm font-bold text-white"
-            >
+            <Link to="/auth" className="premium-btn" style={{ padding: '8px 20px', borderRadius: '10px', fontSize: '0.85rem', textDecoration: 'none' }}>
               Get Started
             </Link>
           )}
@@ -105,18 +129,27 @@ const Navbar = () => {
   );
 };
 
+const AnimatedRoutes = () => {
+  const location = useLocation();
+  return (
+    <PageTransition key={location.pathname}>
+      <Routes location={location}>
+        <Route path="/"          element={<Landing />} />
+        <Route path="/auth"      element={<Auth />} />
+        <Route path="/knowledge" element={<KnowledgeBase />} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+      </Routes>
+    </PageTransition>
+  );
+};
+
 function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen flex flex-col font-sans" style={{ background: '#020617' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#020617', fontFamily: 'Inter, sans-serif' }}>
         <Navbar />
-        <main className="flex-1 flex flex-col">
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/knowledge" element={<KnowledgeBase />} />
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          </Routes>
+        <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <AnimatedRoutes />
         </main>
       </div>
     </BrowserRouter>
