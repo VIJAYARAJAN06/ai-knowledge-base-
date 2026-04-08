@@ -1,0 +1,21 @@
+# Dependencies
+frontend/node_modules/
+backend/node_modules/
+
+# Build outputs
+frontend/dist/
+
+# Environment files — NEVER commit your secrets!
+backend/.env
+frontend/.env
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VSCode (optional)
+.vscode/
