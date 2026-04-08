@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from './store/useAuthStore';
 import PageTransition from './components/PageTransition';
+import CustomCursor from './components/CustomCursor';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Auth from './pages/Auth';
@@ -147,6 +148,7 @@ function App() {
   return (
     <BrowserRouter>
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#020617', fontFamily: 'Inter, sans-serif' }}>
+        <CustomCursor />
         <Navbar />
         <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           <AnimatedRoutes />
